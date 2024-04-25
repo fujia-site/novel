@@ -3,7 +3,7 @@
   "changelog": [
     "@changesets/changelog-github",
     {
-      "repo": "fujia-dev/novel"
+      "repo": "fujia-site/novel"
     }
   ],
   "commit": false,
