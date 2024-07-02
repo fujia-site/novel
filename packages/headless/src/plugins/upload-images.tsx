@@ -1,5 +1,5 @@
-import { EditorState, Plugin, PluginKey } from "@tiptap/pm/state";
-import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
+import { type EditorState, Plugin, PluginKey } from "@tiptap/pm/state";
+import { Decoration, DecorationSet, type EditorView } from "@tiptap/pm/view";
 
 const uploadKey = new PluginKey("upload-image");
 
@@ -15,7 +15,7 @@ export const UploadImagesPlugin = ({ imageClass }: { imageClass: string }) =>
         // See if the transaction adds or removes any placeholders
         //@ts-expect-error - not yet sure what the type I need here
         const action = tr.getMeta(this);
-        if (action && action.add) {
+        if (action?.add) {
           const { id, pos, src } = action.add;
 
           const placeholder = document.createElement("div");
@@ -28,14 +28,9 @@ export const UploadImagesPlugin = ({ imageClass }: { imageClass: string }) =>
             id,
           });
           set = set.add(tr.doc, [deco]);
-        } else if (action && action.remove) {
-          set = set.remove(
-            set.find(
-              undefined,
-              undefined,
-              (spec) => spec.id == action.remove.id,
-            ),
-          );
+        } else if (action?.remove) {
+          // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
+          set = set.remove(set.find(undefined, undefined, (spec) => spec.id == action.remove.id));
         }
         return set;
       },
@@ -47,8 +42,10 @@ export const UploadImagesPlugin = ({ imageClass }: { imageClass: string }) =>
     },
   });
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 function findPlaceholder(state: EditorState, id: {}) {
   const decos = uploadKey.getState(state) as DecorationSet;
+  // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
   const found = decos.find(undefined, undefined, (spec) => spec.id == id);
   return found.length ? found[0]?.from : null;
 }
@@ -87,7 +84,7 @@ export const createImageUpload =
     onUpload(file).then((src) => {
       const { schema } = view.state;
 
-      let pos = findPlaceholder(view.state, id);
+      const pos = findPlaceholder(view.state, id);
 
       // If the content around the placeholder has been deleted, drop
       // the image
@@ -103,8 +100,12 @@ export const createImageUpload =
       const node = schema.nodes.image?.create({ src: imageSrc });
       if (!node) return;
 
+      const transaction = view.state.tr.replaceWith(pos, pos, node).setMeta(uploadKey, { remove: { id } });
+      view.dispatch(transaction);
+    }, () => {
+      // Deletes the image placeholder on error
       const transaction = view.state.tr
-        .replaceWith(pos, pos, node)
+        .delete(pos, pos)
         .setMeta(uploadKey, { remove: { id } });
       view.dispatch(transaction);
     });
@@ -112,11 +113,7 @@ export const createImageUpload =
 
 export type UploadFn = (file: File, view: EditorView, pos: number) => void;
 
-export const handleImagePaste = (
-  view: EditorView,
-  event: ClipboardEvent,
-  uploadFn: UploadFn,
-) => {
+export const handleImagePaste = (view: EditorView, event: ClipboardEvent, uploadFn: UploadFn) => {
   if (event.clipboardData?.files.length) {
     event.preventDefault();
     const [file] = Array.from(event.clipboardData.files);
@@ -128,12 +125,7 @@ export const handleImagePaste = (
   return false;
 };
 
-export const handleImageDrop = (
-  view: EditorView,
-  event: DragEvent,
-  moved: boolean,
-  uploadFn: UploadFn,
-) => {
+export const handleImageDrop = (view: EditorView, event: DragEvent, moved: boolean, uploadFn: UploadFn) => {
   if (!moved && event.dataTransfer?.files.length) {
     event.preventDefault();
     const [file] = Array.from(event.dataTransfer.files);

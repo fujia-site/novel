@@ -1,10 +1,10 @@
 import { EditorBubble, useEditor } from "@fujia/novel";
-import React, { Fragment, useEffect, type ReactNode } from "react";
-import { Button } from "../ui/button";
-import { AISelector } from "./ai-selector";
-import Magic from "../ui/icons/magic";
-import {} from "@fujia/novel/plugins";
 import { removeAIHighlight } from "@fujia/novel/extensions";
+import {} from "@fujia/novel/plugins";
+import { Fragment, type ReactNode, useEffect } from "react";
+import { Button } from "../ui/button";
+import Magic from "../ui/icons/magic";
+import { AISelector } from "./ai-selector";
 
 interface GenerativeMenuSwitchProps {
   children: ReactNode;

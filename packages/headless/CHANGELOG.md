@@ -1,5 +1,29 @@
 # novel
 
+## 0.4.3
+
+### Patch Changes
+
+- add twitter extension
+
+## 0.4.2
+
+### Patch Changes
+
+- bump version
+
+## 0.4.1
+
+### Patch Changes
+
+- expose utils
+
+## 0.4.0
+
+### Minor Changes
+
+- expose utils fix bugs
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@fujia/novel",
-  "version": "0.3.1",
+  "version": "0.4.3",
   "description": "Notion-style WYSIWYG editor with AI-powered autocompletions",
   "license": "Apache-2.0",
   "type": "module",
@@ -25,12 +25,19 @@
       "types": "./dist/plugins.d.ts",
       "import": "./dist/plugins.js",
       "require": "./dist/plugins.cjs"
+    },
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js",
+      "require": "./dist/utils.cjs"
     }
   },
   "scripts": {
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit",
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "biome lint ./src",
+    "format": "biome format ./src "
   },
   "sideEffects": false,
   "peerDependencies": {
@@ -40,6 +47,8 @@
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
     "@tiptap/core": "^2.1.7",
+    "@tiptap/extension-character-count": "^2.3.0",
+    "@tiptap/extension-code-block-lowlight": "^2.2.6",
     "@tiptap/extension-color": "^2.1.7",
     "@tiptap/extension-highlight": "^2.1.7",
     "@tiptap/extension-horizontal-rule": "^2.1.7",
@@ -50,25 +59,27 @@
     "@tiptap/extension-task-list": "^2.1.7",
     "@tiptap/extension-text-style": "^2.1.7",
     "@tiptap/extension-underline": "^2.1.7",
+    "@tiptap/extension-youtube": "^2.4.0",
     "@tiptap/pm": "^2.1.7",
     "@tiptap/react": "^2.1.7",
     "@tiptap/starter-kit": "^2.1.7",
     "@tiptap/suggestion": "^2.1.7",
-    "tiptap-extension-auto-joiner": "^0.1.1",
-    "tiptap-extension-global-drag-handle": "^0.1.6",
     "@types/node": "18.15.3",
     "cmdk": "^0.2.1",
     "jotai": "^2.6.4",
     "react-markdown": "^8.0.7",
     "react-moveable": "^0.56.0",
+    "react-tweet": "^3.2.1",
     "tippy.js": "^6.3.7",
+    "tiptap-extension-global-drag-handle": "^0.1.7",
     "tiptap-markdown": "^0.8.9",
     "tunnel-rat": "^0.1.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.7.2",
     "@types/react": "^18.2.55",
     "@types/react-dom": "18.2.19",
-    "@repo/tsconfig": "workspace:*",
+    "tsconfig": "workspace:*",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   },

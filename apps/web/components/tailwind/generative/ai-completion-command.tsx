@@ -1,4 +1,3 @@
-import React from "react";
 import { CommandGroup, CommandItem, CommandSeparator } from "../ui/command";
 import { useEditor } from "@fujia/novel";
 import { Check, TextQuote, TrashIcon } from "lucide-react";

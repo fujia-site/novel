@@ -1,13 +1,7 @@
-import {
-  Editor,
-  Mark,
-  markInputRule,
-  markPasteRule,
-  mergeAttributes,
-} from "@tiptap/core";
+import { type Editor, Mark, markInputRule, markPasteRule, mergeAttributes } from "@tiptap/core";
 
 export interface AIHighlightOptions {
-  HTMLAttributes: Record<string, any>;
+  HTMLAttributes: Record<string, string>;
 }
 
 declare module "@tiptap/core" {
@@ -45,8 +39,7 @@ export const AIHighlight = Mark.create<AIHighlightOptions>({
     return {
       color: {
         default: null,
-        parseHTML: (element) =>
-          element.getAttribute("data-color") || element.style.backgroundColor,
+        parseHTML: (element) => element.getAttribute("data-color") || element.style.backgroundColor,
         renderHTML: (attributes) => {
           if (!attributes.color) {
             return {};
@@ -70,11 +63,7 @@ export const AIHighlight = Mark.create<AIHighlightOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      "mark",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-      0,
-    ];
+    return ["mark", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
   },
 
   addCommands() {
@@ -124,11 +113,7 @@ export const AIHighlight = Mark.create<AIHighlightOptions>({
 
 export const removeAIHighlight = (editor: Editor) => {
   const tr = editor.state.tr;
-  tr.removeMark(
-    0,
-    editor.state.doc.nodeSize - 2,
-    editor.state.schema.marks["ai-highlight"],
-  );
+  tr.removeMark(0, editor.state.doc.nodeSize - 2, editor.state.schema.marks["ai-highlight"]);
   editor.view.dispatch(tr);
 };
 export const addAIHighlight = (editor: Editor, color?: string) => {

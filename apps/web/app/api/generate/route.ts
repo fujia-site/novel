@@ -1,20 +1,14 @@
-import OpenAI from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
-import { kv } from "@vercel/kv";
 import { Ratelimit } from "@upstash/ratelimit";
-import { match } from "ts-pattern";
+import { kv } from "@vercel/kv";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { match } from "ts-pattern";
 
 // Create an OpenAI API client (that's edge friendly!)
-// Using LLamma's OpenAI client:
 
 // IMPORTANT! Set the runtime to edge: https://vercel.com/docs/functions/edge-functions/edge-runtime
 export const runtime = "edge";
-
-const llama = new OpenAI({
-  apiKey: "ollama",
-  baseURL: "http://localhost:11434/v1",
-});
 
 export async function POST(req: Request): Promise<Response> {
   const openai = new OpenAI({
@@ -23,12 +17,9 @@ export async function POST(req: Request): Promise<Response> {
   });
   // Check if the OPENAI_API_KEY is set, if not return 400
   if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "") {
-    return new Response(
-      "Missing OPENAI_API_KEY - make sure to add it to your .env file.",
-      {
-        status: 400,
-      },
-    );
+    return new Response("Missing OPENAI_API_KEY - make sure to add it to your .env file.", {
+      status: 400,
+    });
   }
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const ip = req.headers.get("x-forwarded-for");
@@ -37,9 +28,7 @@ export async function POST(req: Request): Promise<Response> {
       limiter: Ratelimit.slidingWindow(50, "1 d"),
     });
 
-    const { success, limit, reset, remaining } = await ratelimit.limit(
-      `novel_ratelimit_${ip}`,
-    );
+    const { success, limit, reset, remaining } = await ratelimit.limit(`novel_ratelimit_${ip}`);
 
     if (!success) {
       return new Response("You have reached your request limit for the day.", {
@@ -53,7 +42,7 @@ export async function POST(req: Request): Promise<Response> {
     }
   }
 
-  let { prompt, option, command } = await req.json();
+  const { prompt, option, command } = await req.json();
   const messages = match(option)
     .with("continue", () => [
       {
@@ -86,8 +75,7 @@ export async function POST(req: Request): Promise<Response> {
       {
         role: "system",
         content:
-          "You are an AI writing assistant that shortens existing text. " +
-          "Use Markdown formatting when appropriate.",
+          "You are an AI writing assistant that shortens existing text. " + "Use Markdown formatting when appropriate.",
       },
       {
         role: "user",

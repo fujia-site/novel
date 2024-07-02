@@ -1,5 +1,3 @@
-import React from "react";
-import { CommandGroup, CommandItem, CommandSeparator } from "../ui/command";
 import {
   ArrowDownWideNarrow,
   CheckCheck,
@@ -8,7 +6,8 @@ import {
   WrapText,
 } from "lucide-react";
 import { useEditor } from "@fujia/novel";
-import { getPrevText } from "@fujia/novel/extensions";
+import { getPrevText } from "@fujia/novel/utils";
+import { CommandGroup, CommandItem, CommandSeparator } from "../ui/command";
 
 const options = [
   {
@@ -66,7 +65,9 @@ const AISelectorCommands = ({ onSelect }: AISelectorCommandsProps) => {
       <CommandGroup heading="Use AI to do more">
         <CommandItem
           onSelect={() => {
-            const text = getPrevText(editor, { chars: 5000 });
+            const pos = editor.state.selection.from;
+
+            const text = getPrevText(editor, pos);
             onSelect(text, "continue");
           }}
           value="continue"

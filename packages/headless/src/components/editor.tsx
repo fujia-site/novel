@@ -7,7 +7,6 @@ import { novelStore } from "../utils/store";
 import { EditorCommandTunnelContext } from "./editor-command";
 import type { FC, ReactNode } from "react";
 import type { EditorProviderProps, JSONContent } from "@tiptap/react";
-import type { EditorView } from "@tiptap/pm/view";
 
 export interface EditorProps {
   readonly children: ReactNode;
@@ -23,9 +22,7 @@ export const EditorRoot: FC<EditorRootProps> = ({ children }) => {
 
   return (
     <Provider store={novelStore}>
-      <EditorCommandTunnelContext.Provider value={tunnelInstance}>
-        {children}
-      </EditorCommandTunnelContext.Provider>
+      <EditorCommandTunnelContext.Provider value={tunnelInstance}>{children}</EditorCommandTunnelContext.Provider>
     </Provider>
   );
 };
@@ -44,11 +41,7 @@ export const EditorContent = forwardRef<HTMLDivElement, EditorContentProps>(
 
     return (
       <div ref={ref} className={className}>
-        <EditorProvider
-          {...rest}
-          content={initialContent}
-          extensions={extensions}
-        >
+        <EditorProvider {...rest} content={initialContent} extensions={extensions}>
           {children}
         </EditorProvider>
       </div>

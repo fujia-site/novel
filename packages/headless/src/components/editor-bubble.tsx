@@ -20,39 +20,43 @@ export const EditorBubble = forwardRef<HTMLDivElement, EditorBubbleProps>(
       instanceRef.current.popperInstance?.update();
     }, [tippyOptions?.placement]);
 
-    const bubbleMenuProps: Omit<BubbleMenuProps, "children"> = useMemo(() => {
-      const shouldShow: BubbleMenuProps["shouldShow"] = ({ editor, state }) => {
-        const { selection } = state;
-        const { empty } = selection;
+    const bubbleMenuProps: Omit<BubbleMenuProps, "children" | "editor"> =
+      useMemo(() => {
+        const shouldShow: BubbleMenuProps["shouldShow"] = ({
+          editor,
+          state,
+        }) => {
+          const { selection } = state;
+          const { empty } = selection;
 
-        // don't show bubble menu if:
-        // - the editor is not editable
-        // - the selected node is an image
-        // - the selection is empty
-        // - the selection is a node selection (for drag handles)
-        if (
-          !editor.isEditable ||
-          editor.isActive("image") ||
-          empty ||
-          isNodeSelection(selection)
-        ) {
-          return false;
-        }
-        return true;
-      };
+          // don't show bubble menu if:
+          // - the editor is not editable
+          // - the selected node is an image
+          // - the selection is empty
+          // - the selection is a node selection (for drag handles)
+          if (
+            !editor.isEditable ||
+            editor.isActive("image") ||
+            empty ||
+            isNodeSelection(selection)
+          ) {
+            return false;
+          }
+          return true;
+        };
 
-      return {
-        shouldShow,
-        tippyOptions: {
-          onCreate: (val) => {
-            instanceRef.current = val;
+        return {
+          shouldShow,
+          tippyOptions: {
+            onCreate: (val) => {
+              instanceRef.current = val;
+            },
+            moveTransition: "transform 0.15s ease-out",
+            ...tippyOptions,
           },
-          moveTransition: "transform 0.15s ease-out",
-          ...tippyOptions,
-        },
-        ...rest,
-      };
-    }, [rest, tippyOptions]);
+          ...rest,
+        };
+      }, [rest, tippyOptions]);
 
     if (!currentEditor) return null;
 

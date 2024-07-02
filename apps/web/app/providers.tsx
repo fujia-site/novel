@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-  createContext,
-} from "react";
+import { type Dispatch, type ReactNode, type SetStateAction, createContext } from "react";
 import { ThemeProvider, useTheme } from "next-themes";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
@@ -30,12 +25,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   const [font, setFont] = useLocalStorage<string>("novel__font", "Default");
 
   return (
-    <ThemeProvider
-      attribute="class"
-      enableSystem
-      disableTransitionOnChange
-      defaultTheme="system"
-    >
+    <ThemeProvider attribute="class" enableSystem disableTransitionOnChange defaultTheme="system">
       <AppContext.Provider
         value={{
           font,

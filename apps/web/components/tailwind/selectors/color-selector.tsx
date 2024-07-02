@@ -1,21 +1,15 @@
 import { Check, ChevronDown } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
 import { EditorBubbleItem, useEditor } from "@fujia/novel";
 
+import { Button } from "@/components/tailwind/ui/button";
 import {
-  PopoverTrigger,
   Popover,
   PopoverContent,
+  PopoverTrigger,
 } from "@/components/tailwind/ui/popover";
-import { Button } from "@/components/tailwind/ui/button";
 export interface BubbleColorMenuItem {
   name: string;
   color: string;
-}
-
-interface ColorSelectorProps {
-  isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const TEXT_COLORS: BubbleColorMenuItem[] = [
@@ -101,7 +95,7 @@ interface ColorSelectorProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const ColorSelector = ({ open, onOpenChange }) => {
+export const ColorSelector = ({ open, onOpenChange }: ColorSelectorProps) => {
   const { editor } = useEditor();
 
   if (!editor) return null;
@@ -139,9 +133,9 @@ export const ColorSelector = ({ open, onOpenChange }) => {
           <div className="my-1 px-2 text-sm font-semibold text-muted-foreground">
             Color
           </div>
-          {TEXT_COLORS.map(({ name, color }, index) => (
+          {TEXT_COLORS.map(({ name, color }) => (
             <EditorBubbleItem
-              key={index}
+              key={name}
               onSelect={() => {
                 editor.commands.unsetColor();
                 name !== "Default" &&
@@ -169,9 +163,9 @@ export const ColorSelector = ({ open, onOpenChange }) => {
           <div className="my-1 px-2 text-sm font-semibold text-muted-foreground">
             Background
           </div>
-          {HIGHLIGHT_COLORS.map(({ name, color }, index) => (
+          {HIGHLIGHT_COLORS.map(({ name, color }) => (
             <EditorBubbleItem
-              key={index}
+              key={name}
               onSelect={() => {
                 editor.commands.unsetHighlight();
                 name !== "Default" && editor.commands.setHighlight({ color });
