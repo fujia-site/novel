@@ -15,12 +15,17 @@ export async function POST(req: Request): Promise<Response> {
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: process.env.OPENAI_BASE_URL || "https://api.openai.com/v1",
   });
+
   // Check if the OPENAI_API_KEY is set, if not return 400
   if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "") {
-    return new Response("Missing OPENAI_API_KEY - make sure to add it to your .env file.", {
-      status: 400,
-    });
+    return new Response(
+      "Missing OPENAI_API_KEY - make sure to add it to your .env file.",
+      {
+        status: 400,
+      },
+    );
   }
+
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const ip = req.headers.get("x-forwarded-for");
     const ratelimit = new Ratelimit({
@@ -28,7 +33,9 @@ export async function POST(req: Request): Promise<Response> {
       limiter: Ratelimit.slidingWindow(50, "1 d"),
     });
 
-    const { success, limit, reset, remaining } = await ratelimit.limit(`novel_ratelimit_${ip}`);
+    const { success, limit, reset, remaining } = await ratelimit.limit(
+      `novel_ratelimit_${ip}`,
+    );
 
     if (!success) {
       return new Response("You have reached your request limit for the day.", {
@@ -51,7 +58,8 @@ export async function POST(req: Request): Promise<Response> {
           "You are an AI writing assistant that continues existing text based on context from prior text. " +
           "Give more weight/priority to the later characters than the beginning ones. " +
           "Limit your response to no more than 200 characters, but make sure to construct complete sentences." +
-          "Use Markdown formatting when appropriate.",
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -64,7 +72,8 @@ export async function POST(req: Request): Promise<Response> {
         content:
           "You are an AI writing assistant that improves existing text. " +
           "Limit your response to no more than 200 characters, but make sure to construct complete sentences." +
-          "Use Markdown formatting when appropriate.",
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -75,7 +84,9 @@ export async function POST(req: Request): Promise<Response> {
       {
         role: "system",
         content:
-          "You are an AI writing assistant that shortens existing text. " + "Use Markdown formatting when appropriate.",
+          "You are an AI writing assistant that shortens existing text. " +
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -87,7 +98,8 @@ export async function POST(req: Request): Promise<Response> {
         role: "system",
         content:
           "You are an AI writing assistant that lengthens existing text. " +
-          "Use Markdown formatting when appropriate.",
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -100,7 +112,8 @@ export async function POST(req: Request): Promise<Response> {
         content:
           "You are an AI writing assistant that fixes grammar and spelling errors in existing text. " +
           "Limit your response to no more than 200 characters, but make sure to construct complete sentences." +
-          "Use Markdown formatting when appropriate.",
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -113,7 +126,8 @@ export async function POST(req: Request): Promise<Response> {
         content:
           "You area an AI writing assistant that generates text based on a prompt. " +
           "You take an input from the user and a command for manipulating the text" +
-          "Use Markdown formatting when appropriate.",
+          "Use Markdown formatting when appropriate." +
+          " using Chinese to response",
       },
       {
         role: "user",
@@ -122,15 +136,39 @@ export async function POST(req: Request): Promise<Response> {
     ])
     .run() as ChatCompletionMessageParam[];
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
-    stream: true,
-    messages,
-    temperature: 0.7,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    n: 1,
+  // const response = await openai.chat.completions.create(
+  //   {
+  //     model: "gpt-3.5-turbo",
+  //     stream: true,
+  //     messages,
+  //     temperature: 0.7,
+  //     top_p: 1,
+  //     frequency_penalty: 0,
+  //     presence_penalty: 0,
+  //     n: 1,
+  //   },
+  //   {
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+  //     },
+  //   },
+  // );
+  const response = await fetch("https://burn.hair/v1/chat/completions", {
+    method: "POST",
+    body: JSON.stringify({
+      model: "gpt-4-turbo",
+      stream: true,
+      messages,
+      temperature: 0.7,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      n: 1,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer sk-LSsZlVLXq00JyXiu98F4CeEd52Ae4c7bB54aF7325d6802A4`,
+    },
   });
 
   // Convert the response into a friendly text-stream
