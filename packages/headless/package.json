@@ -1,6 +1,6 @@
 {
   "name": "@fujia/novel",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "Notion-style WYSIWYG editor with AI-powered autocompletions",
   "license": "Apache-2.0",
   "type": "module",
@@ -83,7 +83,7 @@
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   },
-  "author": "Steven Tey <stevensteel97@gmail.com>",
+  "author": "fujia <fujia.site@gmail.com>",
   "homepage": "https://novel.sh",
   "repository": {
     "type": "git",
