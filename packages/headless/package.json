@@ -84,13 +84,13 @@
     "typescript": "^5.3.3"
   },
   "author": "fujia <fujia.site@gmail.com>",
-  "homepage": "https://novel.sh",
+  "homepage": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/steven-tey/novel.git"
+    "url": "git+https://github.com/fujia-site/novel.git"
   },
   "bugs": {
-    "url": "https://github.com/steven-tey/novel/issues"
+    "url": "https://github.com/fujia-site/novel/issues"
   },
   "keywords": [
     "ai",
